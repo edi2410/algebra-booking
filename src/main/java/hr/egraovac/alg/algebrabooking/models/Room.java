@@ -1,6 +1,5 @@
 package hr.egraovac.alg.algebrabooking.models;
 
-
 import hr.egraovac.alg.algebrabooking.utils.enums.RoomStatus;
 import hr.egraovac.alg.algebrabooking.utils.enums.RoomType;
 import jakarta.persistence.Column;
@@ -35,15 +34,15 @@ public class Room {
   private String roomNumber;
 
   @Enumerated(EnumType.STRING)
-  private RoomType roomType; // SINGLE, DOUBLE, SUITE
+  private RoomType roomType;
 
   @Column(nullable = false)
   private BigDecimal pricePerNight;
 
-  private Integer capacity; // Number of guests
+  private Integer capacity;
 
   @Enumerated(EnumType.STRING)
-  private RoomStatus status; // AVAILABLE, OCCUPIED, MAINTENANCE
+  private RoomStatus status;
 
   private String description;
 

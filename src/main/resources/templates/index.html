@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{app.title}">Hotel Booking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #BE1E67;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            color: #000;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .language-selector {
+            display: flex;
+            gap: 8px;
+        }
+
+        .language-selector a {
+            text-decoration: none;
+            color: #666;
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .language-selector a:hover,
+        .language-selector a.active {
+            background: #BE1E67;
+            color: white;
+            border-color: #BE1E67;
+        }
+
+        .user-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .user-info span {
+            color: #333;
+        }
+
+        .user-info a {
+            text-decoration: none;
+            color: white;
+            background: #BE1E67;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .user-info a:hover {
+            background: #DF7226;
+        }
+
+        .search-section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 4px solid #DF7226;
+        }
+
+        .search-section h2 {
+            color: #000;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #BE1E67;
+        }
+
+        .search-buttons {
+            display: flex;
+            gap: 10px;
+            grid-column: 1 / -1;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #BE1E67;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #DF7226;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .room-card {
+            background: white;
+            border-left: 4px solid #BE1E67;
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+
+        .room-card:hover {
+            transform: translateX(5px);
+            border-left-color: #DF7226;
+        }
+
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .room-number {
+            font-size: 20px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .room-type {
+            background: #000;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .room-description {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .room-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .room-info {
+            font-size: 14px;
+            color: #666;
+        }
+        .room-price {
+            font-size: 13px;
+            color: #999;
+            font-weight: 400;
+        }
+
+        .book-btn {
+            width: 100%;
+            margin-top: 15px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .no-results {
+            background: white;
+            padding: 50px 20px;
+            text-align: center;
+            color: #666;
+            border-left: 4px solid #DF7226;
+        }
+
+        .no-results h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1 th:text="#{app.title}">Hotel Booking System</h1>
+        <div class="header-right">
+            <div class="language-selector">
+                <a th:href="@{''(lang='en')}" th:classappend="${#locale.toString() == 'en' ? 'active' : ''}">EN</a>
+                <a th:href="@{''(lang='de')}" th:classappend="${#locale.toString() == 'de' ? 'active' : ''}">DE</a>
+            </div>
+            <div class="user-info">
+                <div sec:authorize="isAuthenticated()">
+                    <span th:text="#{header.greeting} + ', '"><span sec:authentication="name"></span>!</span>
+                    <a th:href="@{/dashboard}" th:text="#{header.dashboard}">Dashboard</a>
+                    <a th:href="@{/logout}" th:text="#{header.logout}">Logout</a>
+                </div>
+                <div sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/login}" th:text="#{header.login}">Login</a>
+                    <a th:href="@{/register}" th:text="#{header.register}">Register</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="search-section">
+        <h2 th:text="#{search.title}">Search Rooms</h2>
+        <form th:action="@{/}" method="get" class="search-form">
+            <div class="form-group">
+                <label for="roomType" th:text="#{search.roomType}">Room Type</label>
+                <select id="roomType" name="roomType">
+                    <option value="" th:text="#{search.allRooms}">All Rooms</option>
+                    <option th:each="type : ${roomTypes}"
+                            th:value="${type}"
+                            th:text="${type}"
+                            th:selected="${type == selectedRoomType}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="maxPrice" th:text="#{search.maxPrice}">Maximum Price (€)</label>
+                <input type="number" id="maxPrice" name="maxPrice"
+                       th:value="${maxPrice}" th:placeholder="#{search.maxPrice.placeholder}">
+            </div>
+
+            <div class="form-group">
+                <label for="minCapacity" th:text="#{search.capacity}">Number of Guests</label>
+                <input type="number" id="minCapacity" name="minCapacity"
+                       th:value="${minCapacity}" min="1" th:placeholder="#{search.capacity.placeholder}">
+            </div>
+
+            <div class="form-group">
+                <label for="checkIn" th:text="#{search.checkIn}">Check-in</label>
+                <input type="date" id="checkIn" name="checkIn"
+                       th:value="${checkIn}" th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+            </div>
+
+            <div class="form-group">
+                <label for="checkOut" th:text="#{search.checkOut}">Check-out</label>
+                <input type="date" id="checkOut" name="checkOut"
+                       th:value="${checkOut}">
+            </div>
+
+            <div class="search-buttons">
+                <button type="submit" class="btn btn-primary" th:text="#{search.button}">Search</button>
+                <a th:href="@{/}" class="btn btn-secondary" th:text="#{search.reset}">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <div th:if="${rooms.isEmpty()}" class="no-results">
+        <h3 th:text="#{noResults.title}">No Available Rooms</h3>
+        <p th:text="#{noResults.message}">Try changing the filter settings or check back later.</p>
+    </div>
+
+    <div class="rooms-grid" th:unless="${rooms.isEmpty()}">
+        <div class="room-card" th:each="room : ${rooms}">
+            <div class="room-header">
+                <span class="room-number" th:text="#{room.number} + ' ' + ${room.roomNumber}">Room 101</span>
+                <span class="room-type" th:text="${room.roomType}">SINGLE</span>
+            </div>
+
+            <p class="room-description" th:text="${room.description}">
+                Room Description
+            </p>
+
+            <div class="room-details">
+                <div class="room-info">
+                    <span th:text="${room.capacity} + ' ' + #{room.guests}">2 guests</span>
+                </div>
+                <div class="room-price">
+                    <span th:text="${room.pricePerNight}">79.99</span>€
+                    <span th:text="#{room.perNight}">/night</span>
+                </div>
+            </div>
+
+            <a th:href="@{/room/{id}(id=${room.id})}" class="btn btn-primary book-btn" th:text="#{room.viewDetails}">
+                View Details
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('checkIn').addEventListener('change', function() {
+        const checkIn = new Date(this.value);
+        const checkOut = new Date(checkIn);
+        checkOut.setDate(checkOut.getDate() + 1);
+        document.getElementById('checkOut').value = checkOut.toISOString().split('T')[0];
+        document.getElementById('checkOut').min = checkOut.toISOString().split('T')[0];
+    });
+</script>
+</body>
+</html>
