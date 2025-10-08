@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{room.details.title} + ' - ' + #{app.title}">Room Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #BE1E67;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            color: #000;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .language-selector {
+            display: flex;
+            gap: 8px;
+        }
+
+        .language-selector a {
+            text-decoration: none;
+            color: #666;
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .language-selector a:hover,
+        .language-selector a.active {
+            background: #BE1E67;
+            color: white;
+            border-color: #BE1E67;
+        }
+
+        .user-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .user-info span {
+            color: #333;
+        }
+
+        .user-info a {
+            text-decoration: none;
+            color: white;
+            background: #BE1E67;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .user-info a:hover {
+            background: #DF7226;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #666;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            color: #BE1E67;
+        }
+
+        .room-details-card {
+            background: white;
+            border-left: 4px solid #BE1E67;
+            padding: 30px;
+        }
+
+        .room-header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 25px;
+        }
+
+        .room-title-group {
+            flex: 1;
+        }
+
+        .room-number-large {
+            font-size: 32px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 10px;
+        }
+
+        .room-type-badge {
+            display: inline-block;
+            background: #000;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .room-price-large {
+            text-align: right;
+        }
+
+        .price-amount {
+            font-size: 36px;
+            font-weight: 600;
+            color: #BE1E67;
+            line-height: 1;
+        }
+
+        .price-period {
+            font-size: 14px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .room-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-item {
+            padding: 15px;
+            background: #f8f8f8;
+            border-radius: 4px;
+        }
+
+        .info-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .room-description-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .description-text {
+            color: #666;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .booking-section {
+            background: #f8f8f8;
+            padding: 25px;
+            border-radius: 4px;
+            margin-top: 30px;
+        }
+
+        .booking-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #BE1E67;
+        }
+
+        .total-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .total-label {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .total-amount {
+            font-size: 28px;
+            font-weight: 600;
+            color: #BE1E67;
+        }
+
+        .booking-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #BE1E67;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #DF7226;
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #f0f0f0;
+        }
+
+        .availability-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .status-available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-unavailable {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header Fragment -->
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
+
+    <a th:href="@{/}" class="back-link" th:text="'← ' + #{room.details.backToSearch}">← Back to Search</a>
+
+    <div class="room-details-card">
+        <div class="room-header-section">
+            <div class="room-title-group">
+                <h2 class="room-number-large" th:text="#{room.number} + ' ' + ${room.roomNumber}">Room 101</h2>
+                <span class="room-type-badge" th:text="${room.roomType}">SINGLE</span>
+                <span class="availability-status status-available"
+                      th:classappend="${isRoomAvailable} ? 'status-available' : 'status-unavailable'"
+                      th:text="${room.status.toString().toLowerCase() == 'available'} ? #{room.details.available} : #{room.details.unavailable}">
+                    Available
+                </span>
+            </div>
+            <div class="room-price-large">
+                <div class="price-amount" th:text="${room.pricePerNight} + '€'">79.99€</div>
+                <div class="price-period" th:text="#{room.perNight}">/night</div>
+            </div>
+        </div>
+
+        <div class="room-info-grid">
+            <div class="info-item">
+                <div class="info-label" th:text="#{room.details.capacity}">Capacity</div>
+                <div class="info-value" th:text="${room.capacity} + ' ' + #{room.guests}">2 guests</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label" th:text="#{room.details.type}">Room Type</div>
+                <div class="info-value" th:text="${room.roomType}">SINGLE</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label" th:text="#{room.details.number}">Room Number</div>
+                <div class="info-value" th:text="${room.roomNumber}">101</div>
+            </div>
+        </div>
+
+        <div class="room-description-section">
+            <h3 class="section-title" th:text="#{room.details.description}">Description</h3>
+            <p class="description-text" th:text="${room.description}">
+                This is a comfortable room with all modern amenities.
+            </p>
+        </div>
+
+        <div class="booking-section" sec:authorize="isAuthenticated()">
+            <h3 class="section-title" th:text="#{room.details.bookRoom}">Book This Room</h3>
+            <form th:action="@{/booking/create}" method="post" id="bookingForm">
+                <input type="hidden" name="roomId" th:value="${room.id}">
+
+                <div class="booking-form">
+                    <div class="form-group">
+                        <label for="checkInDate" th:text="#{search.checkIn}">Check-in Date</label>
+                        <input type="date" id="checkInDate" name="checkInDate" required
+                               th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="checkOutDate" th:text="#{search.checkOut}">Check-out Date</label>
+                        <input type="date" id="checkOutDate" name="checkOutDate" required>
+                    </div>
+                </div>
+
+                <div class="total-section">
+                    <span class="total-label" th:text="#{room.details.totalPrice}">Total Price:</span>
+                    <span class="total-amount" id="totalPrice">0€</span>
+                </div>
+
+                <div class="booking-buttons">
+                    <button type="submit" class="btn btn-primary" id="bookButton"
+                            th:text="#{room.details.confirmBooking}"
+                            th:disabled="${!isRoomAvailable}">
+                        Confirm Booking
+                    </button>
+                    <a th:href="@{/}" class="btn btn-secondary" th:text="#{room.details.cancel}">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="booking-section" sec:authorize="!isAuthenticated()">
+            <h3 class="section-title" th:text="#{room.details.loginRequired}">Login Required</h3>
+            <p class="description-text" th:text="#{room.details.loginMessage}">
+                Please log in to book this room.
+            </p>
+            <div class="booking-buttons" style="margin-top: 20px;">
+                <a th:href="@{/login}" class="btn btn-primary" th:text="#{header.login}">Login</a>
+                <a th:href="@{/register}" class="btn btn-secondary" th:text="#{header.register}">Register</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const pricePerNight = document.getElementById('price-amount');
+
+    const checkInInput = document.getElementById('checkInDate');
+    const checkOutInput = document.getElementById('checkOutDate');
+    const totalPriceElement = document.getElementById('totalPrice');
+    const bookButton = document.getElementById('bookButton');
+
+    function calculateTotal() {
+        const checkIn = new Date(checkInInput.value);
+        const checkOut = new Date(checkOutInput.value);
+
+        if (checkIn && checkOut && checkOut > checkIn) {
+            const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+            const total = nights * pricePerNight;
+            totalPriceElement.textContent = total.toFixed(2) + '€';
+            bookButton.disabled = false;
+        } else {
+            totalPriceElement.textContent = '0€';
+            bookButton.disabled = true;
+        }
+    }
+
+    checkInInput.addEventListener('change', function() {
+        const checkIn = new Date(this.value);
+        const checkOut = new Date(checkIn);
+        checkOut.setDate(checkOut.getDate() + 1);
+        checkOutInput.value = checkOut.toISOString().split('T')[0];
+        checkOutInput.min = checkOut.toISOString().split('T')[0];
+        calculateTotal();
+    });
+
+    checkOutInput.addEventListener('change', calculateTotal);
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{header.login} + ' - ' + #{app.title}">Login - Hotel Booking System</title>
+
+
+    <th:block th:replace="~{fragments/header :: common-styles}"></th:block>
+
+    <style>
+        .auth-card {
+            max-width: 400px;
+            margin: 80px auto;
+            background: white;
+            border-radius: 6px;
+            padding: 40px 35px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-card h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #000;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        input:focus {
+            border-color: #BE1E67;
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .register-link a {
+            color: #BE1E67;
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            color: #DF7226;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+<div class="auth-card">
+    <h2 th:text="#{header.login}">Login</h2>
+
+    <div th:if="${param.error}" class="error-message" th:text="#{auth.error}">Invalid username or password</div>
+    <div th:if="${param.logout}" class="error-message" style="color: green;" th:text="#{auth.loggedOut}">You have been logged out</div>
+
+    <form th:action="@{/login}" method="post">
+        <div>
+            <label th:for="'username'" th:text="#{auth.username}">Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label th:for="'password'" th:text="#{auth.password}">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" th:text="#{header.login}">Login</button>
+    </form>
+
+    <div class="register-link">
+        <span th:text="#{auth.noAccount}">Don't have an account?</span>
+        <a th:href="@{/register}" th:text="#{header.register}">Register</a>
+    </div>
+</div>
+</body>
+</html>

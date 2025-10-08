@@ -2,7 +2,7 @@ package hr.egraovac.alg.algebrabooking.utils.enums;
 
 public enum UserRole {
   GUEST("Guest - Can book rooms and view reservations"),
-  RECEPTIONIST("Receptionist - Manages bookings and customer details"),
+  RECEPTIONIST("Receptionist - Manages bookings and customer details.html"),
   MANAGER("Manager - Views occupancy metrics and revenue reports");
 
   private final String description;

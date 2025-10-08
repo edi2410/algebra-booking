@@ -1,15 +1,14 @@
 -- 👤 USERS
--- Password je BCrypt hash za: guest123, recept123, manager123, admin123
--- Generirano sa: new BCryptPasswordEncoder().encode("password")
+-- Password je BCrypt hash za: test1234
 
 INSERT INTO users (username, password, email, full_name, phone, created_at)
-VALUES ('guest', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'guest@hotel.com', 'John Guest',
+VALUES ('guest', '$2a$10$K08edeVjDecfJsdKeV8lYOafJ2fEpXKQeWh7fkw/2t0D69.iH1trK', 'guest@hotel.com', 'John Guest',
         '+385 91 123 4567', CURRENT_TIMESTAMP),
-       ('receptionist', '$2a$10$DkS32wqoHW8HBGCnYfEOSuEj7u4xrY5qLHTBVCOZ9sZGPGPVl0u1e', 'receptionist@hotel.com',
+       ('receptionist', '$2a$10$K08edeVjDecfJsdKeV8lYOafJ2fEpXKQeWh7fkw/2t0D69.iH1trK', 'receptionist@hotel.com',
         'Ana Kovač', '+385 91 234 5678', CURRENT_TIMESTAMP),
-       ('manager', '$2a$10$TdSb3eF0FmNZ7mKGfvOBkOXy6mXhqL8XQCNKzXb5cZLJqDYPWxP6u', 'manager@hotel.com', 'Marko Horvat',
+       ('manager', '$2a$10$K08edeVjDecfJsdKeV8lYOafJ2fEpXKQeWh7fkw/2t0D69.iH1trK', 'manager@hotel.com', 'Marko Horvat',
         '+385 91 345 6789', CURRENT_TIMESTAMP),
-       ('admin', '$2a$10$8cjz47bjbO4Bmnr4cZ8.6uhIXNH9/qZUZCPCCVpzQPgQGjJnGOe5q', 'admin@hotel.com', 'Super Admin',
+       ('admin', '$2a$10$K08edeVjDecfJsdKeV8lYOafJ2fEpXKQeWh7fkw/2t0D69.iH1trK', 'admin@hotel.com', 'Super Admin',
         '+385 91 999 9999', CURRENT_TIMESTAMP);
 
 -- 🔐 USER ROLES

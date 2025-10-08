@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{header.register} + ' - ' + #{app.title}">Register - Hotel Booking System</title>
+
+    <th:block th:replace="~{fragments/header :: common-styles}"></th:block>
+
+    <style>
+        .auth-card {
+            max-width: 450px;
+            margin: 60px auto;
+            background: white;
+            border-radius: 6px;
+            padding: 40px 35px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-card h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #000;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #BE1E67;
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #BE1E67;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            color: #DF7226;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+<div class="auth-card">
+    <h2 th:text="#{header.register}">Register</h2>
+
+    <div th:if="${error}" class="error-message" th:text="${error}"></div>
+
+    <form th:action="@{/register}" method="post">
+        <div>
+            <label for="username" th:text="#{auth.username}">Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label for="email" th:text="#{auth.email}">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="fullName" th:text="#{auth.fullName}">Full Name</label>
+            <input type="text" id="fullName" name="fullName">
+        </div>
+        <div>
+            <label for="password" th:text="#{auth.password}">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" th:text="#{header.register}">Register</button>
+    </form>
+
+    <div class="login-link">
+        <span th:text="#{auth.haveAccount}">Already have an account?</span>
+        <a th:href="@{/login}" th:text="#{header.login}">Login</a>
+    </div>
+</div>
+</body>
+</html>

@@ -50,10 +50,5 @@ public class HomeController {
     return "index";
   }
 
-  @GetMapping("/room/{id}")
-  public String roomDetails(@PathVariable Long id, Model model) {
-    Room room = roomService.findById(id);
-    model.addAttribute("room", room);
-    return "room-details";
-  }
+
 }

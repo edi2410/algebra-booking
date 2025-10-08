@@ -68,4 +68,9 @@ public class User {
   public boolean isManager() {
     return roles.contains(UserRole.MANAGER);
   }
+
+  @PrePersist
+  protected void onCreate() {
+    this.createdAt = LocalDateTime.now();
+  }
 }

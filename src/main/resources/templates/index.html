@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{app.title}">Hotel Booking</title>
+
+    <!-- Common Styles -->
+    <th:block th:replace="~{fragments/header :: common-styles}"></th:block>
+
     <style>
         * {
             margin: 0;
@@ -40,17 +44,6 @@
             font-weight: 600;
         }
 
-        .header-right {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .language-selector {
-            display: flex;
-            gap: 8px;
-        }
-
         .language-selector a {
             text-decoration: none;
             color: #666;
@@ -68,11 +61,6 @@
             border-color: #BE1E67;
         }
 
-        .user-info {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
 
         .user-info span {
             color: #333;
@@ -265,26 +253,9 @@
 </head>
 <body>
 <div class="container">
-    <header>
-        <h1 th:text="#{app.title}">Hotel Booking System</h1>
-        <div class="header-right">
-            <div class="language-selector">
-                <a th:href="@{''(lang='en')}" th:classappend="${#locale.toString() == 'en' ? 'active' : ''}">EN</a>
-                <a th:href="@{''(lang='de')}" th:classappend="${#locale.toString() == 'de' ? 'active' : ''}">DE</a>
-            </div>
-            <div class="user-info">
-                <div sec:authorize="isAuthenticated()">
-                    <span th:text="#{header.greeting} + ', '"><span sec:authentication="name"></span>!</span>
-                    <a th:href="@{/dashboard}" th:text="#{header.dashboard}">Dashboard</a>
-                    <a th:href="@{/logout}" th:text="#{header.logout}">Logout</a>
-                </div>
-                <div sec:authorize="!isAuthenticated()">
-                    <a th:href="@{/login}" th:text="#{header.login}">Login</a>
-                    <a th:href="@{/register}" th:text="#{header.register}">Register</a>
-                </div>
-            </div>
-        </div>
-    </header>
+    <!-- Header Fragment -->
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
 
     <div class="search-section">
         <h2 th:text="#{search.title}">Search Rooms</h2>
