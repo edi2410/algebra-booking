@@ -5,93 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{room.details.title} + ' - ' + #{app.title}">Room Details</title>
+    <!-- common styles -->
+    <th:block th:replace="~{fragments/common-styles :: common-styles}"/>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        header {
-            background: white;
-            padding: 20px 30px;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #BE1E67;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header h1 {
-            color: #000;
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        .header-right {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .language-selector {
-            display: flex;
-            gap: 8px;
-        }
-
-        .language-selector a {
-            text-decoration: none;
-            color: #666;
-            padding: 6px 12px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            font-size: 13px;
-            transition: all 0.3s;
-        }
-
-        .language-selector a:hover,
-        .language-selector a.active {
-            background: #BE1E67;
-            color: white;
-            border-color: #BE1E67;
-        }
-
-        .user-info {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .user-info span {
-            color: #333;
-        }
-
-        .user-info a {
-            text-decoration: none;
-            color: white;
-            background: #BE1E67;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 4px;
-            transition: background 0.3s;
-        }
-
-        .user-info a:hover {
-            background: #DF7226;
-        }
-
         .back-link {
             display: inline-block;
             color: #666;
@@ -277,32 +193,6 @@
             text-align: center;
             display: inline-block;
         }
-
-        .btn-primary {
-            background: #BE1E67;
-            color: white;
-            flex: 1;
-        }
-
-        .btn-primary:hover {
-            background: #DF7226;
-        }
-
-        .btn-primary:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: white;
-            color: #666;
-            border: 1px solid #ddd;
-        }
-
-        .btn-secondary:hover {
-            background: #f0f0f0;
-        }
-
         .availability-status {
             display: inline-block;
             padding: 6px 12px;
@@ -311,21 +201,15 @@
             font-weight: 500;
         }
 
-        .status-available {
-            background: #d4edda;
-            color: #155724;
-        }
 
-        .status-unavailable {
-            background: #f8d7da;
-            color: #721c24;
-        }
     </style>
 </head>
 <body>
+
+<!-- Header Fragment -->
+<th:block th:replace="~{fragments/header :: header}"></th:block>
+
 <div class="container">
-    <!-- Header Fragment -->
-    <th:block th:replace="~{fragments/header :: header}"></th:block>
 
 
     <a th:href="@{/}" class="back-link" th:text="'← ' + #{room.details.backToSearch}">← Back to Search</a>
@@ -385,6 +269,11 @@
                         <label for="checkOutDate" th:text="#{search.checkOut}">Check-out Date</label>
                         <input type="date" id="checkOutDate" name="checkOutDate" required>
                     </div>
+
+                    <div class="form-group">
+                        <label for="specialRequests" th:text="#{booking.specialRequests}">Special request</label>
+                        <input type="text" id="specialRequests" name="specialRequests">
+                    </div>
                 </div>
 
                 <div class="total-section">
@@ -400,6 +289,10 @@
                     </button>
                     <a th:href="@{/}" class="btn btn-secondary" th:text="#{room.details.cancel}">Cancel</a>
                 </div>
+
+                <div th:if="${errorMessage}" style="padding: 15px; background: #f8d7da; color: #721c24; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #dc3545;">
+                    <strong>Error!</strong> <span th:text="${errorMessage}"></span>
+                </div>
             </form>
         </div>
 
@@ -413,11 +306,19 @@
                 <a th:href="@{/register}" class="btn btn-secondary" th:text="#{header.register}">Register</a>
             </div>
         </div>
+
+        <a sec:authorize="hasRole('MANAGER')"
+           th:href="@{/room/edit/{id}(id=${room.id})}"
+           class="edit-btn"
+           title="Edit Room">
+        </a>
     </div>
 </div>
 
 <script th:inline="javascript">
-    const pricePerNight = document.getElementById('price-amount');
+    const priceElement = document.querySelector('.price-amount');
+    const pricePerNight = parseFloat(priceElement.textContent.replace('€', '').trim());
+
 
     const checkInInput = document.getElementById('checkInDate');
     const checkOutInput = document.getElementById('checkOutDate');
@@ -450,5 +351,8 @@
 
     checkOutInput.addEventListener('change', calculateTotal);
 </script>
+
+<!-- Footer Fragment -->
+<th:block th:replace="~{fragments/footer :: footer}" />
 </body>
 </html>

@@ -1,0 +1,49 @@
+
+<html>
+<style>
+
+
+    .language-selector {
+        display: flex;
+        gap: 8px;
+    }
+
+    .language-selector a {
+        text-decoration: none;
+        color: #666;
+        padding: 6px 12px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        font-size: 13px;
+        transition: all 0.3s;
+    }
+
+    .language-selector a:hover,
+    .language-selector a.active {
+        background: #BE1E67;
+        color: white;
+        border-color: #BE1E67;
+    }
+
+    body {
+        margin-bottom: 70px;
+    }
+</style>
+
+
+<!-- Footer Fragment -->
+<footer id="footer" th:fragment="footer">
+    <p>
+        &copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2025</span>
+        <span th:text="#{app.title}">Hotel Booking System</span>
+    </p>
+
+    <div class="language-selector">
+        <a th:href="@{''(lang='en')}"
+           th:classappend="${#locale.toString() == 'en' ? 'active' : ''}">EN</a>
+        <a th:href="@{''(lang='de')}"
+           th:classappend="${#locale.toString() == 'de' ? 'active' : ''}">DE</a>
+    </div>
+</footer>
+
+</html>

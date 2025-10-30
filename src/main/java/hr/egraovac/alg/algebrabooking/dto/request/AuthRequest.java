@@ -1,4 +1,4 @@
-package hr.egraovac.alg.algebrabooking.dto;
+package hr.egraovac.alg.algebrabooking.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponse {
-  private String token;
+public class AuthRequest {
   private String username;
+  private String password;
 
 }

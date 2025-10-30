@@ -1,7 +1,7 @@
 package hr.egraovac.alg.algebrabooking.controller.REST;
 
-import hr.egraovac.alg.algebrabooking.dto.AuthRequest;
-import hr.egraovac.alg.algebrabooking.dto.AuthResponse;
+import hr.egraovac.alg.algebrabooking.dto.request.AuthRequest;
+import hr.egraovac.alg.algebrabooking.dto.response.AuthResponse;
 import hr.egraovac.alg.algebrabooking.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,21 +44,4 @@ public class AuthRestController {
     return ResponseEntity.ok(new AuthResponse(jwt, userDetails.getUsername()));
   }
 
-  @GetMapping("/validate")
-  public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String token) {
-    try {
-      if (token != null && token.startsWith("Bearer ")) {
-        String jwt = token.substring(7);
-        String username = jwtUtil.extractUsername(jwt);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-        if (jwtUtil.validateToken(jwt, userDetails)) {
-          return ResponseEntity.ok("Token is valid");
-        }
-      }
-      return ResponseEntity.status(401).body("Invalid token");
-    } catch (Exception e) {
-      return ResponseEntity.status(401).body("Token validation failed");
-    }
-  }
 }

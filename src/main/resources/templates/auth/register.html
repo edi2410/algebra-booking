@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <title th:text="#{header.register} + ' - ' + #{app.title}">Register - Hotel Booking System</title>
 
-    <th:block th:replace="~{fragments/header :: common-styles}"></th:block>
+    <th:block th:replace="~{fragments/common-styles :: common-styles}"/>
+
 
     <style>
         .auth-card {
@@ -82,7 +83,7 @@
 <div class="auth-card">
     <h2 th:text="#{header.register}">Register</h2>
 
-    <div th:if="${error}" class="error-message" th:text="${error}"></div>
+    <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
 
     <form th:action="@{/register}" method="post">
         <div>
@@ -109,5 +110,7 @@
         <a th:href="@{/login}" th:text="#{header.login}">Login</a>
     </div>
 </div>
+
+<th:block th:replace="~{fragments/footer :: footer}"/>
 </body>
 </html>

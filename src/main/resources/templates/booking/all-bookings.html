@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{booking.allBookings} + ' - ' + #{app.title}">All Bookings</title>
+
+    <!-- common styles -->
+    <th:block th:replace="~{fragments/common-styles :: common-styles}"/>
+
+    <style>
+        .bookings-container {
+            background: white;
+            padding: 25px;
+            border-left: 4px solid #BE1E67;
+        }
+
+        .bookings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .bookings-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .filter-section {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-group label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .booking-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+
+        .booking-card:last-child {
+            border-bottom: none;
+        }
+
+        .booking-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+        }
+
+        .booking-info span {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .booking-guest {
+            font-weight: 600;
+            color: #BE1E67;
+        }
+
+        .booking-status {
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            display: inline-block;
+        }
+
+        .status-PENDING {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-CONFIRMED {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-CANCELLED {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-CHECKED_IN {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-CHECKED_OUT {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .booking-actions .btn {
+            font-size: 13px;
+            padding: 6px 12px;
+        }
+
+        .btn-check-in, .btn-confirm {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-check-in:hover, .btn-confirm:hover {
+            background: #0056b3;
+        }
+
+        .btn-check-out {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-check-out:hover {
+            background: #218838;
+        }
+
+        .btn-cancel {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #c82333;
+        }
+
+        .no-bookings {
+            text-align: center;
+            color: #666;
+            padding: 50px 0;
+        }
+
+        .no-bookings h3 {
+            font-size: 20px;
+            color: #000;
+            margin-bottom: 10px;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 3px solid #BE1E67;
+        }
+
+        .stat-card h4 {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .stat-card p {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .booking-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .booking-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .booking-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
+    <div class="bookings-container">
+        <!-- Flash Messages -->
+        <div th:if="${successMessage}" style="padding: 15px; background: #d4edda; color: #155724; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #28a745;">
+            <strong th:text="#{message.success}">Success!</strong> <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" style="padding: 15px; background: #f8d7da; color: #721c24; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #dc3545;">
+            <strong th:text="#{message.error}">Error!</strong> <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div class="bookings-header">
+            <h2 th:text="#{booking.allBookings}">All Bookings</h2>
+            <span th:text="#{booking.total} + ': ' + ${bookings.size()}">Total: 0</span>
+        </div>
+
+        <!-- Statistics Section (visible only for MANAGER) -->
+        <div sec:authorize="hasRole('MANAGER')" class="stats-section">
+            <div class="stat-card">
+                <h4 th:text="#{booking.stats.total}">Total Bookings</h4>
+                <p th:text="${stats.total}">0</p>
+            </div>
+            <div class="stat-card">
+                <h4 th:text="#{booking.stats.pending}">Pending</h4>
+                <p th:text="${stats.pending}">0</p>
+            </div>
+            <div class="stat-card">
+                <h4 th:text="#{booking.stats.confirmed}">Confirmed</h4>
+                <p th:text="${stats.confirmed}">0</p>
+            </div>
+            <div class="stat-card">
+                <h4 th:text="#{booking.stats.checkedIn}">Checked In</h4>
+                <p th:text="${stats.checkedIn}">0</p>
+            </div>
+            <div class="stat-card">
+                <h4 th:text="#{booking.stats.checkedOut}">Checked Out</h4>
+                <p th:text="${stats.checkedOut}">0</p>
+            </div>
+            <div class="stat-card">
+                <h4 th:text="#{booking.stats.cancelled}">Cancelled</h4>
+                <p th:text="${stats.cancelled}">0</p>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <form th:action="@{/booking/all}" method="get" class="filter-section">
+            <div class="filter-group">
+                <label for="status" th:text="#{booking.filter.status}">Status:</label>
+                <select id="status" name="status">
+                    <option value="" th:text="#{booking.filter.allStatuses}">All Statuses</option>
+                    <option value="PENDING" th:selected="${param.status != null && param.status[0] == 'PENDING'}"
+                            th:text="#{booking.status.PENDING}">Pending</option>
+                    <option value="CONFIRMED" th:selected="${param.status != null && param.status[0] == 'CONFIRMED'}"
+                            th:text="#{booking.status.CONFIRMED}">Confirmed</option>
+                    <option value="CHECKED_IN" th:selected="${param.status != null && param.status[0] == 'CHECKED_IN'}"
+                            th:text="#{booking.status.CHECKED_IN}">Checked In</option>
+                    <option value="CHECKED_OUT" th:selected="${param.status != null && param.status[0] == 'CHECKED_OUT'}"
+                            th:text="#{booking.status.CHECKED_OUT}">Checked Out</option>
+                    <option value="CANCELLED" th:selected="${param.status != null && param.status[0] == 'CANCELLED'}"
+                            th:text="#{booking.status.CANCELLED}">Cancelled</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="dateFrom" th:text="#{booking.filter.dateFrom}">Date From:</label>
+                <input type="date" id="dateFrom" name="dateFrom" th:value="${param.dateFrom}">
+            </div>
+
+            <div class="filter-group">
+                <label for="dateTo" th:text="#{booking.filter.dateTo}">Date To:</label>
+                <input type="date" id="dateTo" name="dateTo" th:value="${param.dateTo}">
+            </div>
+
+            <div class="filter-group">
+                <label for="guestName" th:text="#{booking.filter.guestName}">Guest Name:</label>
+                <input type="text" id="guestName" name="guestName" th:value="${param.guestName}"
+                       th:placeholder="#{booking.filter.searchPlaceholder}">
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-primary" th:text="#{booking.filter.apply}">Filter</button>
+                <a th:href="@{/booking/all}" class="btn btn-secondary" th:text="#{booking.filter.clear}">Clear</a>
+            </div>
+        </form>
+
+        <!-- No Bookings Message -->
+        <div th:if="${bookings.isEmpty()}" class="no-bookings">
+            <h3 th:text="#{booking.noBookingsFound}">No Bookings Found</h3>
+            <p th:text="#{booking.noBookingsMessage}">There are no bookings matching your criteria.</p>
+        </div>
+
+        <!-- Bookings List -->
+        <div th:each="booking : ${bookings}" class="booking-card">
+            <div class="booking-info">
+                <span class="booking-guest">
+                    <strong th:text="${booking.guest.fullName}">John Doe</strong>
+                    (<span th:text="${booking.guest.email}">john@example.com</span>)
+                </span>
+
+                <div class="booking-details">
+                    <span>
+                        <strong th:text="#{booking.id} + ':'">Booking ID:</strong>
+                        <span th:text="${booking.id}">1</span>
+                    </span>
+                    <span>
+                        <strong th:text="#{booking.room} + ':'">Room:</strong>
+                        <span th:text="${booking.room.roomNumber}">101</span>
+                    </span>
+                    <span>
+                        <strong th:text="#{booking.checkIn} + ':'">Check-in:</strong>
+                        <span th:text="${#temporals.format(booking.checkInDate, 'dd.MM.yyyy')}">08.10.2025</span>
+                    </span>
+                    <span>
+                        <strong th:text="#{booking.checkOut} + ':'">Check-out:</strong>
+                        <span th:text="${#temporals.format(booking.checkOutDate, 'dd.MM.yyyy')}">10.10.2025</span>
+                    </span>
+                    <span>
+                        <strong th:text="#{booking.nights} + ':'">Nights:</strong>
+                        <span th:text="${T(java.time.Period).between(booking.checkInDate, booking.checkOutDate).getDays()}">2</span>
+                    </span>
+                    <span>
+                        <strong th:text="#{booking.totalPrice} + ':'">Total:</strong>
+                        <span th:text="'€' + ${booking.totalPrice}">€200</span>
+                    </span>
+                </div>
+
+                <span th:if="${booking.specialRequests != null && !booking.specialRequests.isEmpty()}">
+                    <strong th:text="#{booking.specialRequests} + ':'">Special Requests:</strong>
+                    <span th:text="${booking.specialRequests}">Late check-in</span>
+                </span>
+            </div>
+
+            <div class="booking-actions">
+                <span class="booking-status"
+                      th:classappend="'status-' + ${booking.status.toString()}"
+                      th:text="#{${'booking.status.' + booking.status.toString()}}">PENDING</span>
+
+                <form th:if="${booking.status.name() == 'CONFIRMED'}"
+                      th:action="@{/booking/check-in/{id}(id=${booking.id})}"
+                      method="post"
+                      style="display:inline">
+                    <button type="submit" class="btn btn-check-in" th:text="#{booking.action.checkIn}">Check In</button>
+                </form>
+
+                <form th:if="${booking.status.name() == 'CHECKED_IN'}"
+                      th:action="@{/booking/check-out/{id}(id=${booking.id})}"
+                      method="post"
+                      style="display:inline">
+                    <button type="submit" class="btn btn-check-out" th:text="#{booking.action.checkOut}">Check Out</button>
+                </form>
+
+                <form th:if="${booking.status.name() == 'PENDING'}"
+                      th:action="@{/booking/confirm/{id}(id=${booking.id})}"
+                      method="post"
+                      style="display:inline">
+                    <button type="submit" class="btn btn-confirm" th:text="#{booking.action.confirm}">Confirm</button>
+                </form>
+
+                <form th:if="${booking.status.name() == 'PENDING' || booking.status.name() == 'CONFIRMED'}"
+                      th:action="@{/booking/staff-cancel/{id}(id=${booking.id})}"
+                      method="post"
+                      style="display:inline"
+                      th:attr="onsubmit=|return confirm('#{booking.action.cancelConfirm}');|">
+                    <button type="submit" class="btn btn-cancel" th:text="#{booking.action.cancel}">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer Fragment -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            background-color: white;
+            padding: 30px;
+            margin-top: 20px;
+        }
+        .reminder-box {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1 th:text="#{email.header}">🧹 Room Cleaning Request</h1>
+    </div>
+
+    <div class="content">
+        <p>
+            <span th:text="#{email.greeting}">Dear</span>
+            <span th:text="#{email.housekeeping}">Housekeepers</span>
+        </p>
+
+        <div class="reminder-box">
+            <h3 th:text="#{email.newTask}">New cleaning task assigned</h3>
+            <p><strong th:text="#{email.checkoutDate}">Checkout date:</strong>
+                <span th:text="${#temporals.format(checkOutDate, 'dd.MM.yyyy HH:mm')}">27.10.2025 11:00</span></p>
+            <p><strong th:text="#{email.roomNumber}">Room number:</strong>
+                <span th:text="${booking.room.id}">203</span></p>
+            <p><strong th:text="#{email.guestName}">Guest name:</strong>
+                <span th:text="${guest.fullName}">John Smith</span></p>
+        </div>
+
+        <p th:text="#{email.instructions}">Please clean and prepare this room for the next guest as soon as possible.</p>
+
+        <p th:text="#{email.checklistTitle}">Standard cleaning checklist:</p>
+        <ul>
+            <li th:text="#{email.checklist1}">Change bed linen and towels</li>
+            <li th:text="#{email.checklist2}">Clean bathroom and floors</li>
+            <li th:text="#{email.checklist3}">Check minibar and restock supplies</li>
+            <li th:text="#{email.checklist4}">Report any damages or maintenance issues to reception</li>
+        </ul>
+
+        <p>
+            <span th:text="#{email.thanks}">Thank you for your effort and dedication!</span><br>
+            <strong th:text="#{email.signature}">Hotel Management Team</strong>
+        </p>
+    </div>
+
+    <div class="footer">
+        <p th:text="#{email.footer}">This message was automatically generated after guest checkout.</p>
+    </div>
+</div>
+</body>
+</html>

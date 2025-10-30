@@ -2,9 +2,11 @@ package hr.egraovac.alg.algebrabooking.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -22,14 +24,6 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException ex) {
-    Map<String, Object> body = new HashMap<>();
-    body.put("timestamp", LocalDateTime.now());
-    body.put("error", "Validation Failed");
-    body.put("message", ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
-    return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-  }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
@@ -39,4 +33,15 @@ public class GlobalExceptionHandler {
     body.put("message", ex.getMessage());
     return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
   }
+
+  @ExceptionHandler(AuthorizationDeniedException.class)
+  public ResponseEntity<Map<String, Object>> handleAuthorizationDenied(AuthorizationDeniedException ex) {
+    Map<String, Object> body = new HashMap<>();
+    body.put("timestamp", LocalDateTime.now());
+    body.put("error", "Forbidden");
+    body.put("message", "Access Denied");
+    return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
+  }
+
+
 }

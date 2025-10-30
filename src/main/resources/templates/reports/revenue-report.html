@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{revenue.report} + ' - ' + #{app.title}">Revenue Report</title>
+
+    <!-- common styles -->
+    <th:block th:replace="~{fragments/common-styles :: common-styles}"/>
+
+    <style>
+        .revenue-container {
+            background: white;
+            padding: 25px;
+            border-left: 4px solid #BE1E67;
+        }
+
+        .revenue-header {
+            margin-bottom: 30px;
+        }
+
+        .revenue-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .revenue-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .revenue-table thead {
+            background: #f9f9f9;
+        }
+
+        .revenue-table th,
+        .revenue-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .revenue-table th {
+            font-weight: 600;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .revenue-table td {
+            font-size: 15px;
+            color: #333;
+        }
+
+        .revenue-table tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        .revenue-amount {
+            font-weight: 600;
+            color: #28a745;
+            font-size: 16px;
+        }
+
+        .total-row {
+            background: #f0f0f0;
+            font-weight: 600;
+        }
+
+        .total-row td {
+            border-top: 2px solid #BE1E67;
+            padding: 20px 15px;
+            font-size: 18px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .revenue-table {
+                font-size: 13px;
+            }
+
+            .revenue-table th,
+            .revenue-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
+    <div class="revenue-container">
+        <div class="revenue-header">
+            <h2 th:text="#{revenue.report}">Revenue Report</h2>
+            <p th:text="#{revenue.description}">Monthly revenue overview from all bookings</p>
+        </div>
+
+        <!-- No Data Message -->
+        <div th:if="${monthlyRevenue.isEmpty()}" class="no-data">
+            <h3 th:text="#{revenue.noData}">No Revenue Data</h3>
+            <p th:text="#{revenue.noDataMessage}">There is no revenue data available yet.</p>
+        </div>
+
+        <!-- Revenue Table -->
+        <table th:unless="${monthlyRevenue.isEmpty()}" class="revenue-table">
+            <thead>
+            <tr>
+                <th th:text="#{revenue.month}">Month</th>
+                <th th:text="#{revenue.year}">Year</th>
+                <th th:text="#{revenue.bookings}">Bookings</th>
+                <th th:text="#{revenue.amount}">Revenue</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="revenue : ${monthlyRevenue}">
+                <td th:text="#{${'month.' + revenue.month}}">January</td>
+                <td th:text="${revenue.year}">2025</td>
+                <td th:text="${revenue.bookingCount}">15</td>
+                <td class="revenue-amount" th:text="'€' + ${#numbers.formatDecimal(revenue.revenue, 1, 2)}">€1,500.00</td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="2" th:text="#{revenue.total}">Total</td>
+                <td th:text="${#aggregates.sum(monthlyRevenue.![bookingCount])}">50</td>
+                <td class="revenue-amount" th:text="'€' + ${#numbers.formatDecimal(#aggregates.sum(monthlyRevenue.![revenue]), 1, 2)}">€5,000.00</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Footer Fragment -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+</html>

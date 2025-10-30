@@ -2,6 +2,7 @@ package hr.egraovac.alg.algebrabooking.mapper;
 
 import hr.egraovac.alg.algebrabooking.dto.UserDTO;
 import hr.egraovac.alg.algebrabooking.models.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +29,18 @@ public class UserMapper {
   public static List<UserDTO> toDtoList(List<User> users) {
     return users.stream().map(UserMapper::toDto).collect(Collectors.toList());
 
+  }
+
+  public static UserDetails toUserDetails(User user) {
+    String[] roles = user.getRoles().stream()
+        .map(Enum::name)
+        .toArray(String[]::new);
+
+    return org.springframework.security.core.userdetails.User.builder()
+        .username(user.getUsername())
+        .password(user.getPassword())
+        .roles(roles)
+        .build();
   }
 
 }

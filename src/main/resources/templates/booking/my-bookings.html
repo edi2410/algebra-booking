@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{booking.myBookings} + ' - ' + #{app.title}">My Bookings</title>
+
+    <!-- common styles -->
+    <th:block th:replace="~{fragments/common-styles :: common-styles}"/>
+
+    <style>
+        .bookings-container {
+            background: white;
+            padding: 25px;
+            border-left: 4px solid #BE1E67;
+        }
+
+        .bookings-header {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .booking-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+
+        .booking-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .booking-info span {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .booking-status {
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+
+        .booking-actions a, .booking-actions button {
+            margin-left: 10px;
+        }
+
+        .booking-actions .btn {
+            font-size: 13px;
+            padding: 6px 12px;
+        }
+
+        .no-bookings {
+            text-align: center;
+            color: #666;
+            padding: 50px 0;
+        }
+
+        .no-bookings h3 {
+            font-size: 20px;
+            color: #000;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
+    <div class="bookings-container">
+        <div class="bookings-header" th:text="#{booking.myBookings}">My Bookings</div>
+
+
+        <div th:if="${successMessage}" style="padding: 15px; background: #d4edda; color: #155724; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #28a745;">
+            <strong>Success!</strong> <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" style="padding: 15px; background: #f8d7da; color: #721c24; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #dc3545;">
+            <strong>Error!</strong> <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div th:if="${bookings.isEmpty()}" class="no-bookings">
+            <h3 th:text="#{noResults.title}">No Available Rooms</h3>
+            <p th:text="#{noResults.message}">Try changing the filter settings or check back later.</p>
+        </div>
+
+        <div th:each="booking : ${bookings}" class="booking-card">
+            <div class="booking-info">
+                <span th:text="#{booking.confirmation.bookingId} + ': ' + ${booking.id}">Booking ID: 1</span>
+                <span th:text="#{room.number} + ' ' + ${booking.room.roomNumber}">Room 101</span>
+                <span id="checkInDate" th:text="#{booking.checkIn} + ': ' + ${#temporals.format(booking.checkInDate, 'dd.MM.yyyy')}">Check-in: 2025-10-08</span>
+                <span id="checkOutDate" th:text="#{booking.checkOut} + ': ' + ${#temporals.format(booking.checkOutDate, 'dd.MM.yyyy')}">Check-out: 2025-10-10</span>
+                <span th:text="#{booking.nights} + ': ' + ${T(java.time.Period).between(booking.checkInDate, booking.checkOutDate).getDays()}">Nights: 2</span>
+            </div>
+
+            <div>
+                <span class="booking-status"
+                      th:class="'status-' + ${booking.status.toString()}"
+                      th:text="${booking.status.toString()}">PENDING</span>
+                <div class="booking-actions" th:if="${booking.status.name() == 'PENDING'}">
+                    <form th:action="@{/booking/cancel/{id}(id=${booking.id})}" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-secondary" th:text="#{booking.cancel}">Cancel Booking</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer Fragment -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+</html>

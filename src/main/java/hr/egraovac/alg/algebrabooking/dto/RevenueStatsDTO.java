@@ -5,12 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
+import java.math.BigDecimal;
+
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthRequest {
-  private String username;
-  private String password;
+@Getter
+@Setter
+public class RevenueStatsDTO {
+  private int year;
+  private int month;
+  private BigDecimal revenue;
+  private Long bookingCount;
 
 }

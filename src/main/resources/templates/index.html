@@ -7,78 +7,9 @@
     <title th:text="#{app.title}">Hotel Booking</title>
 
     <!-- Common Styles -->
-    <th:block th:replace="~{fragments/header :: common-styles}"></th:block>
+    <th:block th:replace="~{fragments/common-styles :: common-styles}"></th:block>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            background: white;
-            padding: 20px 30px;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #BE1E67;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header h1 {
-            color: #000;
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        .language-selector a {
-            text-decoration: none;
-            color: #666;
-            padding: 6px 12px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            font-size: 13px;
-            transition: all 0.3s;
-        }
-
-        .language-selector a:hover,
-        .language-selector a.active {
-            background: #BE1E67;
-            color: white;
-            border-color: #BE1E67;
-        }
-
-
-        .user-info span {
-            color: #333;
-        }
-
-        .user-info a {
-            text-decoration: none;
-            color: white;
-            background: #BE1E67;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 4px;
-            transition: background 0.3s;
-        }
-
-        .user-info a:hover {
-            background: #DF7226;
-        }
 
         .search-section {
             background: white;
@@ -129,35 +60,6 @@
             display: flex;
             gap: 10px;
             grid-column: 1 / -1;
-        }
-
-        .btn {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: #BE1E67;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #DF7226;
-        }
-
-        .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
-            border: 1px solid #ddd;
-        }
-
-        .btn-secondary:hover {
-            background: #e0e0e0;
         }
 
         .rooms-grid {
@@ -222,6 +124,7 @@
             font-size: 14px;
             color: #666;
         }
+
         .room-price {
             font-size: 13px;
             color: #999;
@@ -249,12 +152,25 @@
             margin-bottom: 10px;
             color: #000;
         }
+
+        .availability-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-left: 2px;
+        }
+
     </style>
 </head>
 <body>
+
+<!-- Header Fragment -->
+<th:block th:replace="~{fragments/header :: header}"></th:block>
+
 <div class="container">
-    <!-- Header Fragment -->
-    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
 
 
     <div class="search-section">
@@ -313,6 +229,11 @@
             <div class="room-header">
                 <span class="room-number" th:text="#{room.number} + ' ' + ${room.roomNumber}">Room 101</span>
                 <span class="room-type" th:text="${room.roomType}">SINGLE</span>
+                <span sec:authorize="hasRole('MANAGER')" class="availability-status status-available"
+                      th:classappend="${room.status.toString().toLowerCase() == 'available'} ? 'status-available' : 'status-unavailable'"
+                      th:text="${room.status.toString().toLowerCase() == 'available'} ? #{room.details.available} : #{room.details.unavailable}">
+                    Available
+                </span>
             </div>
 
             <p class="room-description" th:text="${room.description}">
@@ -332,12 +253,18 @@
             <a th:href="@{/room/{id}(id=${room.id})}" class="btn btn-primary book-btn" th:text="#{room.viewDetails}">
                 View Details
             </a>
+            <a sec:authorize="hasRole('MANAGER')"
+               th:href="@{/room/edit/{id}(id=${room.id})}"
+               class="btn btn-secondary book-btn"
+               title="Edit Room">
+               Edit
+            </a>
         </div>
     </div>
 </div>
 
 <script>
-    document.getElementById('checkIn').addEventListener('change', function() {
+    document.getElementById('checkIn').addEventListener('change', function () {
         const checkIn = new Date(this.value);
         const checkOut = new Date(checkIn);
         checkOut.setDate(checkOut.getDate() + 1);
@@ -345,5 +272,8 @@
         document.getElementById('checkOut').min = checkOut.toISOString().split('T')[0];
     });
 </script>
+
+<!-- Footer Fragment -->
+<th:block th:replace="~{fragments/footer :: footer}"/>
 </body>
 </html>

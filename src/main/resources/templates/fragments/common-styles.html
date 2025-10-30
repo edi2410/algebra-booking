@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- Common Styles Fragment -->
+<th:block th:fragment="common-styles">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 64px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Logo */
+        .logo-link {
+            text-decoration: none;
+        }
+
+        .logo-link h1 {
+            color: #000;
+            font-size: 24px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .logo-link:hover h1 {
+            color: #BE1E67;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            border-bottom: 3px solid #BE1E67;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 10px 32px;
+            z-index: 100;
+            width: 100vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Language selector */
+        .language-selector {
+            display: flex;
+            gap: 8px;
+        }
+
+        .language-selector a {
+            text-decoration: none;
+            color: #666;
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .language-selector a:hover,
+        .language-selector a.active {
+            background: #BE1E67;
+            color: white;
+            border-color: #BE1E67;
+        }
+
+        /* User Info / Buttons */
+        .user-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .user-info span {
+            color: #333;
+        }
+
+        /* Unified button style for header links and logout */
+        .user-info a,
+        .btn-logout {
+            text-decoration: none;
+            color: white;
+            background: #BE1E67;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .user-info a:hover,
+        .btn-logout:hover {
+            background: #DF7226;
+        }
+
+        /* General buttons */
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #BE1E67;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #DF7226;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        /* Back link */
+        .back-link {
+            display: inline-block;
+            color: #666;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            color: #BE1E67;
+        }
+
+
+
+        .status-available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-unavailable {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            border-top: 3px solid #BE1E67;
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</th:block>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background-color: #FF9800;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            background-color: white;
+            padding: 30px;
+            margin-top: 20px;
+        }
+        .reminder-box {
+            background-color: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1 th:text="#{email.booking.header}">🔔 Booking Reminder</h1>
+    </div>
+
+    <div class="content">
+        <p>
+            <span th:text="#{email.greeting}">Dear</span>
+            <span th:text="${guest.fullName}">Guest</span>,
+        </p>
+
+        <div class="reminder-box">
+            <h3 th:text="#{email.stayStarts}">⏰ Your stay starts tomorrow!</h3>
+            <p><strong th:text="#{email.checkinDate}">Check-in Date:</strong>
+                <span th:text="${#temporals.format(checkInDate, 'dd.MM.yyyy')}">Tomorrow</span></p>
+            <p><strong th:text="#{email.confirmationNumber}">Confirmation Number:</strong>
+                <span th:text="${booking.getId()}">ABC123</span></p>
+        </div>
+
+        <p th:text="#{email.welcomeMessage}">
+            We're excited to welcome you tomorrow! Please remember:
+        </p>
+
+        <ul>
+            <li th:text="#{email.reminder1}">Check-in time: 14:00</li>
+            <li th:text="#{email.reminder2}">Bring a valid ID</li>
+            <li th:text="#{email.reminder3}">Your confirmation number</li>
+        </ul>
+
+        <p>
+            <span th:text="#{email.safeTravels}">Safe travels!</span><br>
+            <span th:text="#{email.signature}">Hotel Management Team</span>
+        </p>
+    </div>
+</div>
+</body>
+</html>

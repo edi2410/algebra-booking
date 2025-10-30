@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{booking.confirmation.title} + ' - ' + #{app.title}">Booking Confirmation</title>
+
+    <!-- common styles -->
+    <th:block th:replace="~{fragments/common-styles :: common-styles}"/>
+
+    <style>
+        .confirmation-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #BE1E67;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .success-message {
+            text-align: center;
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .booking-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .summary-item {
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .summary-item label {
+            display: block;
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .summary-item span {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .total-price {
+            text-align: right;
+            font-size: 22px;
+            font-weight: 700;
+            color: #BE1E67;
+            margin-top: 20px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .section-divider {
+            border-top: 2px solid #eee;
+            margin: 25px 0;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <!-- Header -->
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
+    <div class="confirmation-container">
+        <h1 th:text="#{booking.confirmation.header}">Booking Confirmed!</h1>
+
+        <div class="success-message" th:text="#{booking.confirmation.success}">
+            Your booking has been successfully created.
+        </div>
+
+        <div class="booking-summary">
+            <div class="summary-item">
+                <label th:text="#{room.details.number}">Room Number</label>
+                <span th:text="${room.roomNumber}">101</span>
+            </div>
+            <div class="summary-item">
+                <label th:text="#{room.details.type}">Room Type</label>
+                <span th:text="${room.roomType}">SINGLE</span>
+            </div>
+            <div class="summary-item">
+                <label th:text="#{booking.checkIn}">Check-in Date</label>
+                <span th:text="${booking.checkInDate}">2025-10-10</span>
+            </div>
+            <div class="summary-item">
+                <label th:text="#{booking.checkOut}">Check-out Date</label>
+                <span th:text="${booking.checkOutDate}">2025-10-12</span>
+            </div>
+            <div class="summary-item">
+                <label th:text="#{booking.nights}">Number of Nights</label>
+                <span th:text="${nights}">2</span>
+            </div>
+            <div class="summary-item">
+                <label th:text="#{booking.status}">Booking Status</label>
+                <span th:text="${booking.status}">PENDING</span>
+            </div>
+            <div class="summary-item" th:if="${booking.specialRequests}">
+                <label th:text="#{booking.specialRequests}">Special Requests</label>
+                <span th:text="${booking.specialRequests}">Late check-in</span>
+            </div>
+        </div>
+
+        <div class="total-price">
+            <span th:text="#{room.details.totalPrice} + ': ' + ${booking.totalPrice} + '€'">Total: 159.98€</span>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="btn-group">
+            <a th:href="@{/booking/my-bookings}" class="btn btn-primary" th:text="#{booking.confirmation.viewMyBookings}">
+                View My Bookings
+            </a>
+            <a th:href="@{/}" class="btn btn-secondary" th:text="#{booking.confirmation.backToHome}">
+                Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Footer Fragment -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+</html>

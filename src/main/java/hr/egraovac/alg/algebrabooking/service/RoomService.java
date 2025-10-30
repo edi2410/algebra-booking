@@ -27,28 +27,28 @@ public class RoomService {
     return roomRepository.findByStatus(RoomStatus.AVAILABLE);
   }
 
-  public List<Room> searchRooms(RoomType roomType, BigDecimal maxPrice,
+  public Room saveRoom(Room room) {
+    roomRepository.save(room);
+    return room;
+  }
+
+  public void deleteRoom(Long id){
+    roomRepository.deleteById(id);
+  }
+
+  public List<Room> allRooms(){
+    return roomRepository.findAll();
+  }
+
+  public List<Room> searchRooms(RoomStatus roomStatus, RoomType roomType, BigDecimal maxPrice,
       Integer minCapacity, LocalDate checkIn, LocalDate checkOut) {
 
-    List<Room> rooms = roomRepository.findByStatus(RoomStatus.AVAILABLE);
-
-    if (roomType != null) {
-      rooms = rooms.stream()
-          .filter(room -> room.getRoomType().equals(roomType))
-          .collect(Collectors.toList());
-    }
-
-    if (maxPrice != null) {
-      rooms = rooms.stream()
-          .filter(room -> room.getPricePerNight().compareTo(maxPrice) <= 0)
-          .collect(Collectors.toList());
-    }
-
-    if (minCapacity != null) {
-      rooms = rooms.stream()
-          .filter(room -> room.getCapacity() >= minCapacity)
-          .collect(Collectors.toList());
-    }
+    List<Room> rooms = roomRepository.searchRooms(
+        roomStatus,
+        roomType,
+        maxPrice,
+        minCapacity
+    );
 
     if (checkIn != null && checkOut != null) {
       rooms = rooms.stream()

@@ -6,7 +6,7 @@
     <title th:text="#{header.login} + ' - ' + #{app.title}">Login - Hotel Booking System</title>
 
 
-    <th:block th:replace="~{fragments/header :: common-styles}"></th:block>
+    <th:block th:replace="~{fragments/common-styles :: common-styles}"/>
 
     <style>
         .auth-card {
@@ -105,5 +105,7 @@
         <a th:href="@{/register}" th:text="#{header.register}">Register</a>
     </div>
 </div>
+
+<th:block th:replace="~{fragments/footer :: footer}"/>
 </body>
 </html>

@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -62,4 +63,12 @@ public class Booking {
 
   @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
   private List<BookingReminder> reminders;
+
+  @PrePersist
+  protected void onCreate() {
+    this.createdAt = LocalDateTime.now();
+    if (this.status == null) {
+      this.status = BookingStatus.PENDING;
+    }
+  }
 }

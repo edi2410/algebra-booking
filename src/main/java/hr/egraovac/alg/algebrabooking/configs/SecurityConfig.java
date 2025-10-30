@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 
 import java.util.Optional;
 
@@ -37,15 +39,13 @@ public class SecurityConfig {
   @Order(1)
   public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
     http
-        .securityMatcher("/api/**") // Only apply to /api/** endpoints
-        .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless API
+        .securityMatcher("/api/**")
+        .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(session -> session
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No sessions for API
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         )
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/auth/**").permitAll() // Public auth endpoints
-            .requestMatchers("/api/guest/**").hasRole("GUEST")
-            .requestMatchers("/api/receptionist/**").hasRole("RECEPTIONIST")
+            .requestMatchers("/api/auth/**","/swagger-ui.html", "/api/rooms/**").permitAll()
             .requestMatchers("/api/manager/**").hasRole("MANAGER")
             .anyRequest().authenticated()
         )
@@ -69,22 +69,20 @@ public class SecurityConfig {
                 "/room/**",
                 "/register",
                 "/login",
-                "/swagger-ui.html",
-                "/h2-console/**"
+                "/swagger-ui.html"
             ).permitAll()
-            .requestMatchers("/guest/**").hasRole("GUEST")
-            .requestMatchers("/receptionist/**").hasRole("RECEPTIONIST")
             .requestMatchers("/manager/**").hasRole("MANAGER")
             .anyRequest().authenticated()
         )
         .formLogin(form -> form
             .loginPage("/login")
             .permitAll()
-            .defaultSuccessUrl("/dashboard", true)
+            .defaultSuccessUrl("/", true)
             .failureUrl("/login?error=true")
         )
         .logout(logout -> logout
             .logoutUrl("/logout")
+            .logoutRequestMatcher(new org.springframework.security.web.util.matcher.RegexRequestMatcher("^/logout$", "GET"))
             .logoutSuccessUrl("/")
             .invalidateHttpSession(true)
             .deleteCookies("JSESSIONID")

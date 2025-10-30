@@ -46,8 +46,7 @@ A hotel management system facilitating room bookings, guest management, and staf
 
 ### 💻 Backend Development (33h)
 - Spring MVC + Thymeleaf login flows (6h)
-- REST API with JWT authentication (5h)
-- CRUD for rooms, bookings, guests with JPA (6h)
+- REST API with JWT authentication (5h- CRUD for rooms, bookings, guests with JPA (6h)
 - JdbcTemplate for bulk pricing & reporting (5h)
 - Scheduler jobs for reminders & housekeeping (4h)
 - Input validation & exception handling (4h)

@@ -1,171 +1,60 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-</head>
-<body>
 
-<!-- Header Fragment -->
 <header th:fragment="header">
-    <h1 th:text="#{app.title}">Hotel Booking System</h1>
+
+    <div class="header-left">
+        <!-- Logo / App Title links to home -->
+        <a th:href="@{/}" class="logo-link">
+            <h1 th:text="#{app.title}">Hotel Booking System</h1>
+        </a>
+    </div>
+
     <div class="header-right">
-        <div class="language-selector">
-            <a th:href="@{''(lang='en')}" th:classappend="${#locale.toString() == 'en' ? 'active' : ''}">EN</a>
-            <a th:href="@{''(lang='de')}" th:classappend="${#locale.toString() == 'de' ? 'active' : ''}">DE</a>
-        </div>
         <div class="user-info">
+            <!-- If authenticated -->
             <div sec:authorize="isAuthenticated()">
-                <span><span th:text="#{header.greeting}">Hello</span>, <strong sec:authentication="name"></strong>!</span>
-                <a th:href="@{/dashboard}" th:text="#{header.dashboard}">Dashboard</a>
-                <a th:href="@{/logout}" th:text="#{header.logout}">Logout</a>
+                <span>
+                    <span th:text="#{header.greeting}">Hello</span>,
+                    <strong sec:authentication="name"></strong>!
+                </span>
+
+                <a sec:authorize="hasAnyRole('GUEST')"  th:href="@{/booking/my-bookings}" class="btn-header" th:text="#{header.myBookings}">My bookings</a>
+
+                <a sec:authorize="hasRole('MANAGER')"
+                   th:href="@{/room/new}"
+                   class="btn-header">
+                    Add room
+                </a>
+
+                <a sec:authorize="hasRole('MANAGER')"
+                   th:href="@{/manager/stats/revenue}"
+                   class="btn-header">
+                    Stats
+                </a>
+
+                <a sec:authorize="hasAnyRole('MANAGER', 'RECEPTIONIST')"
+                   th:href="@{/booking/all}"
+                   class="btn-header">
+                    All Bookings
+                </a>
+
+                <a th:href="@{/logout}" class="btn-header" th:text="#{header.logout}">Logout</a>
+
+
             </div>
+
+            <!-- If not authenticated -->
             <div sec:authorize="!isAuthenticated()">
-                <a th:href="@{/login}" th:text="#{header.login}">Login</a>
-                <a th:href="@{/register}" th:text="#{header.register}">Register</a>
+                <a th:href="@{/login}" class="btn-header" th:text="#{header.login}">Login</a>
+                <a th:href="@{/register}" class="btn-header" th:text="#{header.register}">Register</a>
             </div>
         </div>
     </div>
+
 </header>
 
-<!-- Common Styles Fragment -->
-<th:block th:fragment="common-styles">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            min-height: 100vh;
-            padding: 20px;
-        }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            background: white;
-            padding: 20px 30px;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #BE1E67;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header h1 {
-            color: #000;
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        .header-right {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .language-selector {
-            display: flex;
-            gap: 8px;
-        }
-
-        .language-selector a {
-            text-decoration: none;
-            color: #666;
-            padding: 6px 12px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            font-size: 13px;
-            transition: all 0.3s;
-        }
-
-        .language-selector a:hover,
-        .language-selector a.active {
-            background: #BE1E67;
-            color: white;
-            border-color: #BE1E67;
-        }
-
-        .user-info {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .user-info span {
-            color: #333;
-        }
-
-        .user-info a {
-            text-decoration: none;
-            color: white;
-            background: #BE1E67;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 4px;
-            transition: background 0.3s;
-        }
-
-        .user-info a:hover {
-            background: #DF7226;
-        }
-
-        .btn {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: #BE1E67;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #DF7226;
-        }
-
-        .btn-primary:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
-            border: 1px solid #ddd;
-        }
-
-        .btn-secondary:hover {
-            background: #e0e0e0;
-        }
-
-        .back-link {
-            display: inline-block;
-            color: #666;
-            text-decoration: none;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        .back-link:hover {
-            color: #BE1E67;
-        }
-    </style>
-</th:block>
-
-</body>
 </html>

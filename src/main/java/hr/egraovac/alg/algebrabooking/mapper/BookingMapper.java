@@ -3,6 +3,9 @@ package hr.egraovac.alg.algebrabooking.mapper;
 import hr.egraovac.alg.algebrabooking.dto.BookingDTO;
 import hr.egraovac.alg.algebrabooking.models.Booking;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class BookingMapper {
 
   public static BookingDTO toDTO(Booking booking) {
@@ -10,8 +13,8 @@ public class BookingMapper {
 
     BookingDTO dto = new BookingDTO();
     dto.setId(booking.getId());
-    dto.setGuestId(booking.getGuest() != null ? booking.getGuest().getId() : null);
-    dto.setRoomId(booking.getRoom() != null ? booking.getRoom().getId() : null);
+    dto.setGuestId(booking.getGuest().getId());
+    dto.setRoomId(booking.getRoom().getId());
     dto.setCheckInDate(booking.getCheckInDate());
     dto.setCheckOutDate(booking.getCheckOutDate());
     dto.setTotalPrice(booking.getTotalPrice());
@@ -19,5 +22,13 @@ public class BookingMapper {
     dto.setSpecialRequests(booking.getSpecialRequests());
 
     return dto;
+  }
+
+  public static List<BookingDTO> toListOfDTO(List<Booking> bookingList) {
+    if (bookingList == null) return null;
+
+    return bookingList.stream()
+        .map(BookingMapper::toDTO)
+        .collect(Collectors.toList());
   }
 }

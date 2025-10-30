@@ -1,4 +1,3 @@
-// RoomNotFoundException.java
 package hr.egraovac.alg.algebrabooking.exception;
 
 public class RoomNotFoundException extends RuntimeException {
